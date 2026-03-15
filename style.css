@@ -1,0 +1,692 @@
+/*
+  ========================================
+  style.css — MPL ふりかえりアンケート
+  ========================================
+  このファイルは「見た目」を決めるファイルだよ。
+  色・大きさ・位置・アニメーションを
+  ぜんぶここで管理しているよ。
+*/
+
+
+/* ========================================
+   色の変数（カラーパレット）
+   ========================================
+   :root に色の名前を登録しておくと、
+   あちこちで同じ色を使いまわせるよ。
+   例えば var(--warm) と書くだけで
+   きれいなゴールド色になるよ。
+*/
+:root {
+  --cream:      #f5f0e8; /* クリーム色（背景）         */
+  --ink:        #1a1710; /* 濃い茶色（文字・ボタン）   */
+  --warm:       #c8a96e; /* ゴールド（アクセントカラー）*/
+  --warm-light: #e8d5aa; /* 薄いゴールド               */
+  --soft:       #e8e2d6; /* やわらかいベージュ（枠線）  */
+  --muted:      #7a7060; /* 灰茶色（サブテキスト）      */
+  --green:      #4a7c59; /* 緑色（成功メッセージ）      */
+  --green-light:#d4e8da; /* 薄い緑（成功ボックスの背景）*/
+  --radius:     20px;    /* 角丸の大きさ               */
+}
+
+
+/* ========================================
+   リセット・共通設定
+   ========================================
+   全部の要素（*）に対して
+   共通のルールを決めているよ。
+   「box-sizing: border-box」は
+   「幅に枠線やパディングを含める」
+   という便利な設定だよ。
+*/
+* {
+  box-sizing: border-box; /* 幅の計算を統一する */
+  margin:  0;             /* 外側のすき間をリセット */
+  padding: 0;             /* 内側のすき間をリセット */
+}
+
+
+/* ========================================
+   body（ページ全体）
+   ========================================
+   ページの背景色・文字・フォントを
+   まとめて設定しているよ。
+*/
+body {
+  background:   var(--cream);                    /* クリーム色の背景       */
+  color:        var(--ink);                      /* 文字は濃い茶色         */
+  font-family:  'Noto Sans JP', sans-serif;      /* 日本語フォント         */
+  font-weight:  300;                             /* 細めの文字の太さ       */
+  min-height:   100vh;                           /* 最低でも画面いっぱい   */
+  padding-bottom: 80px;                          /* 下にすき間を作る       */
+}
+
+/*
+  body::after → body の後ろに
+  うっすらザラザラしたテクスチャ（ノイズ）を
+  重ねているよ。
+  本物の紙っぽい質感を出すための工夫だよ。
+  pointer-events: none → クリックは素通りさせる
+  z-index: 1000       → 一番手前に重ねる
+*/
+body::after {
+  content:    '';
+  position:   fixed;
+  inset:      0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index:    1000;
+  opacity:    0.5;
+}
+
+
+/* ========================================
+   プログレスバー（しんちょくバー）
+   ========================================
+   画面の上に固定（fixed）されているよ。
+   .progress-bar が実際にのびる部分。
+   transition で「なめらかにのびる」
+   アニメーションをつけているよ。
+*/
+.progress-wrap {
+  position: fixed;       /* 画面の上に固定         */
+  top:   0;
+  left:  0;
+  right: 0;
+  height: 3px;           /* 細いバー               */
+  background: var(--soft);
+  z-index: 100;          /* 他の要素より手前に出す */
+}
+
+.progress-bar {
+  height:     100%;
+  background: var(--warm);    /* ゴールド色           */
+  width:      0%;             /* 最初は 0%。script.js がのばすよ */
+  /* なめらかに動くアニメーション設定 */
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ========================================
+   ヘッダー
+   ========================================
+   ロゴとステップ数字を左右に並べているよ。
+   display: flex と justify-content: space-between で
+   左右に分けて配置しているよ。
+*/
+header {
+  padding:    40px 24px 0;    /* 上・左右・下 のすき間 */
+  max-width:  600px;          /* 最大幅                */
+  margin:     0 auto;         /* 左右中央寄せ          */
+  display:    flex;
+  align-items:     center;
+  justify-content: space-between;
+}
+
+/* ロゴの文字スタイル */
+.logo-text {
+  font-family:    'DM Serif Display', serif;
+  font-size:      18px;
+  letter-spacing: 0.02em;
+  color:          var(--muted);
+}
+
+/* ステップカウンター（Step 1 / 3 など） */
+.step-counter {
+  font-size:      12px;
+  color:          var(--muted);
+  letter-spacing: 0.1em;
+}
+
+
+/* ========================================
+   メインコンテンツ
+   ========================================
+*/
+main {
+  max-width: 600px;   /* 読みやすい幅に制限 */
+  margin:    0 auto;  /* 左右中央寄せ       */
+  padding:   40px 24px 0;
+}
+
+
+/* ========================================
+   スクリーン（画面の切りかえ）
+   ========================================
+   .screen はふだん display: none（非表示）。
+   .active クラスがついた時だけ表示されるよ。
+   アニメーション fadeUp で下から上へふわっと出てくる。
+*/
+.screen {
+  display: none; /* ふだんは隠す */
+}
+
+.screen.active {
+  display:   block;
+  /* ふわっと上に出てくるアニメーション */
+  animation: fadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* fadeUp アニメーション：下から上へ、透明から見えるへ */
+@keyframes fadeUp {
+  from {
+    opacity:   0;
+    transform: translateY(24px); /* 少し下から始まる */
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);    /* 元の位置に着地   */
+  }
+}
+
+
+/* ========================================
+   画面タイトル系
+   ========================================
+*/
+/* 小さい英字ラベル（Step 1 of 3 など） */
+.screen-eyebrow {
+  font-size:      11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase; /* 英字を大文字にする */
+  color:          var(--warm);
+  font-weight:    700;
+  margin-bottom:  12px;
+}
+
+/* 大きなタイトル */
+.screen-title {
+  font-family: 'DM Serif Display', serif;
+  /* clamp(最小, 推奨, 最大) → 画面幅に合わせて自動調整 */
+  font-size:   clamp(28px, 6vw, 40px);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+/* タイトルの中のイタリック（斜体）部分 */
+.screen-title em {
+  font-style: italic;
+  color:      var(--warm); /* ゴールド色 */
+}
+
+/* サブテキスト（説明文） */
+.screen-desc {
+  font-size:     14px;
+  line-height:   1.8;
+  color:         var(--muted);
+  margin-bottom: 40px;
+}
+
+
+/* ========================================
+   質問ブロック
+   ========================================
+   各質問（Q1〜Q10）をくるむかたまりだよ。
+   下にすき間（margin-bottom）を入れて
+   質問と質問の間を空けているよ。
+*/
+.q-block {
+  margin-bottom: 36px;
+}
+
+/* 質問の本文テキスト */
+.q-label {
+  font-size:     16px;
+  font-weight:   700;
+  line-height:   1.5;
+  margin-bottom: 16px;
+}
+
+/* 質問番号のまるいバッジ（1・2・3…） */
+.q-label .q-num {
+  display:       inline-block;
+  width:         24px;
+  height:        24px;
+  background:    var(--warm);
+  color:         #fff;
+  border-radius: 50%;      /* 丸くする */
+  font-size:     11px;
+  font-weight:   700;
+  text-align:    center;
+  line-height:   24px;
+  margin-right:  8px;
+}
+
+/* 質問の下の補足説明テキスト */
+.q-sub {
+  font-size:     12px;
+  color:         var(--muted);
+  margin-top:    -10px;
+  margin-bottom: 16px;
+  padding-left:  32px; /* 番号バッジ分ずらす */
+}
+
+
+/* ========================================
+   Q1：心が動いた瞬間カード
+   ========================================
+   2列グリッドで4枚のカードを並べているよ。
+*/
+.moment-grid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr; /* 2列 */
+  gap:                   10px;
+}
+
+/* カード1枚のスタイル */
+.moment-card {
+  background:    #fff;
+  border:        2px solid var(--soft);
+  border-radius: 14px;
+  padding:       16px;
+  cursor:        pointer; /* マウスカーソルを指の形にする */
+  transition:    all 0.2s; /* 変化を0.2秒でなめらかに */
+  text-align:    center;
+}
+
+/* カード内の絵文字 */
+.moment-card .moment-icon  { font-size: 28px; margin-bottom: 8px; }
+/* カード内のラベル */
+.moment-card .moment-label { font-size: 13px; font-weight: 700; line-height: 1.3; }
+/* カード内のサブテキスト */
+.moment-card .moment-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* 選ばれたカード（selected クラスがついた時） */
+.moment-card.selected {
+  border-color:  var(--warm);
+  background:    #fffbf3;
+  transform:     scale(1.02);         /* 少し大きくなる */
+  box-shadow:    0 4px 20px rgba(200, 169, 110, 0.2); /* 影をつける */
+}
+
+
+/* ========================================
+   Q2：満足度ボタン（絵文字5つ）
+   ========================================
+*/
+/* ボタンを横一列に並べる */
+.satisfaction-row {
+  display:         flex;
+  gap:             8px;
+  justify-content: space-between;
+}
+
+/* 各絵文字ボタン */
+.sat-btn {
+  flex:          1;       /* 横幅を均等に分ける */
+  aspect-ratio:  1;       /* 正方形にする */
+  border:        2px solid var(--soft);
+  border-radius: 12px;
+  background:    #fff;
+  /* clamp で画面幅に合わせた絵文字サイズ */
+  font-size:     clamp(18px, 4vw, 26px);
+  cursor:        pointer;
+  transition:    all 0.15s;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+}
+
+/* マウスを乗せたとき少し大きくなる */
+.sat-btn:hover { transform: scale(1.08); }
+
+/* 選ばれたボタン */
+.sat-btn.selected {
+  border-color: var(--warm);
+  background:   #fffbf3;
+  box-shadow:   0 4px 16px rgba(200, 169, 110, 0.25);
+  transform:    scale(1.12); /* 選ばれたら一番大きく */
+}
+
+/* ボタンの下の説明ラベル（もの足りない ←→ 最高だった！） */
+.sat-labels {
+  display:         flex;
+  justify-content: space-between;
+  margin-top:      8px;
+  padding:         0 4px;
+  font-size:       11px;
+< truncated lines 347-425 >
+  cursor:        pointer;
+  transition:    all 0.15s;
+  display:       flex;
+  align-items:   center;
+  gap:           14px;
+}
+
+.radio-card:hover   { border-color: var(--warm-light); }
+.radio-card.selected { border-color: var(--warm); background: #fffbf3; }
+
+/* ラジオの丸ボタン部分 */
+.radio-dot {
+  width:         20px;
+  height:        20px;
+  border-radius: 50%; /* 丸くする */
+  border:        2px solid var(--soft);
+  flex-shrink:   0;   /* 縮まないようにする */
+  transition:    all 0.15s;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+}
+
+/* 選ばれたときのラジオ丸：背景をゴールドに */
+.radio-card.selected .radio-dot {
+  border-color: var(--warm);
+  background:   var(--warm);
+}
+
+/* 選ばれたときのラジオ丸：中の白い点 */
+.radio-card.selected .radio-dot::after {
+  content:       '';
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  background:    #fff;
+}
+
+.radio-label { font-size: 14px; font-weight: 700; }
+.radio-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+
+/* ========================================
+   参加動機ピル（Q9：複数選択OK）
+   ========================================
+   丸みのある小さなボタンをいくつも
+   並べているよ。選んだものは色が変わる。
+*/
+.pill-group {
+  display:   flex;
+  flex-wrap: wrap; /* 画面幅に合わせて折り返す */
+  gap:       8px;
+}
+
+.pill-check {
+  padding:       10px 18px;
+  border:        2px solid var(--soft);
+  border-radius: 99px;  /* 完全な丸みをつける */
+  background:    #fff;
+  font-size:     13px;
+  cursor:        pointer;
+  transition:    all 0.15s;
+  font-family:   'Noto Sans JP', sans-serif;
+  font-weight:   300;
+  color:         var(--ink);
+}
+
+/* 選ばれたピル */
+.pill-check.selected {
+  border-color: var(--warm);
+  background:   #fffbf3;
+  font-weight:  700;
+}
+
+
+/* ========================================
+   属性入力エリア（Q10のセレクトボックス）
+   ========================================
+   2列グリッドで選択肢を並べているよ。
+   スマホ（420px以下）では1列になるよ。
+*/
+.attr-row {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   12px;
+}
+
+/* スマホサイズでは1列に変える */
+@media (max-width: 420px) {
+  .attr-row { grid-template-columns: 1fr; }
+}
+
+/* ラベル */
+.attr-field label {
+  display:        block;
+  font-size:      11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--muted);
+  font-weight:    700;
+  margin-bottom:  8px;
+}
+
+/* セレクトボックス */
+.attr-field select {
+  width:         100%;
+  background:    #fff;
+  border:        2px solid var(--soft);
+  border-radius: 12px;
+  padding:       12px 14px;
+  font-family:   'Noto Sans JP', sans-serif;
+  font-size:     14px;
+  color:         var(--ink);
+  outline:       none;
+  appearance:    none;  /* ブラウザのデフォルトの見た目をリセット */
+  cursor:        pointer;
+  transition:    border-color 0.2s;
+}
+
+.attr-field select:focus { border-color: var(--warm); }
+
+
+/* ========================================
+   次へ・送信ボタン
+   ========================================
+*/
+.next-btn {
+  width:          100%;
+  padding:        18px;
+  background:     var(--ink);     /* 濃い茶色 */
+  color:          var(--cream);   /* クリーム色の文字 */
+  border:         none;
+  border-radius:  14px;
+  font-family:    'DM Serif Display', serif;
+  font-size:      18px;
+  cursor:         pointer;
+  transition:     all 0.2s;
+  letter-spacing: 0.02em;
+  margin-top:     8px;
+}
+
+/* マウスを乗せたとき：ゴールドに変わって少し浮く */
+.next-btn:hover {
+  background: var(--warm);
+  color:      #fff;
+  transform:  translateY(-1px); /* 少し上に浮く */
+  box-shadow: 0 8px 28px rgba(200, 169, 110, 0.35);
+}
+
+/* 押せない状態（disabled）のとき：うすくグレーに */
+.next-btn:disabled {
+  opacity:    0.4;
+  cursor:     not-allowed; /* 禁止マークのカーソル */
+  transform:  none;
+  box-shadow: none;
+  background: var(--ink);
+}
+
+
+/* ========================================
+   結果画面（スクリーン 4）
+   ========================================
+*/
+/* 結果全体を中央寄せ */
+.result-wrap {
+  text-align:  center;
+  padding-top: 20px;
+}
+
+/* 浮かぶ絵文字アイコン */
+.result-icon {
+  font-size:     56px;
+  margin-bottom: 20px;
+  /* ゆっくり上下に揺れるアニメーション */
+  animation:     floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); } /* 8px 浮かぶ */
+}
+
+/* AI メッセージが入るカード */
+.ai-message-card {
+  background:    #fff;
+  border:        2px solid var(--warm-light);
+  border-radius: 24px;
+  padding:       32px 28px;
+  margin:        28px 0;
+  text-align:    left;
+  position:      relative; /* ::before の基準にする */
+}
+
+/* カードの左上に大きな引用符 " を飾りとして追加 */
+.ai-message-card::before {
+  content:     '"';
+  font-family: 'DM Serif Display', serif;
+  font-size:   80px;
+  color:       var(--warm-light);
+  position:    absolute;
+  top:         -10px;
+  left:        20px;
+  line-height: 1;
+}
+
+/* AI が書いたメッセージ本文 */
+.ai-message-text {
+  font-size:    16px;
+  line-height:  1.9;
+  color:        var(--ink);
+  padding-top:  24px;   /* 引用符の分だけ下げる */
+  white-space:  pre-wrap; /* 改行をそのまま表示する */
+}
+
+/* ローディング（読み込み中）のアニメーション */
+.ai-loading {
+  display:         flex;
+  gap:             8px;
+  align-items:     center;
+  justify-content: center;
+  padding:         20px;
+  color:           var(--muted);
+  font-size:       14px;
+}
+
+/* 3つの点がバウンドするアニメーション */
+.dot-anim span {
+  display:       inline-block;
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  background:    var(--warm);
+  animation:     dotBounce 1.4s infinite ease-in-out;
+  margin:        0 2px;
+}
+/* 2つ目・3つ目の点はタイミングをずらす */
+.dot-anim span:nth-child(2) { animation-delay: 0.2s; }
+.dot-anim span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+
+/* コピー・シェアボタンの横並び */
+.result-actions {
+  display:    flex;
+  gap:        10px;
+  margin-top: 20px;
+}
+
+/* コピー・シェアボタン */
+.result-btn {
+  flex:          1;
+  padding:       14px;
+  border-radius: 12px;
+  border:        2px solid var(--soft);
+  background:    #fff;
+  font-family:   'Noto Sans JP', sans-serif;
+  font-size:     14px;
+  font-weight:   700;
+  cursor:        pointer;
+  transition:    all 0.15s;
+  color:         var(--ink);
+}
+
+.result-btn:hover { border-color: var(--warm); }
+
+/* シェアボタンは黒背景 */
+.result-btn.share {
+  background:   var(--ink);
+  color:        var(--cream);
+  border-color: var(--ink);
+}
+.result-btn.share:hover {
+  background:   var(--warm);
+  border-color: var(--warm);
+}
+
+/* 送信結果のお知らせボックス（成功：緑） */
+.submission-note {
+  background:    var(--green-light);
+  border:        2px solid rgba(74, 124, 89, 0.2);
+  border-radius: 14px;
+  padding:       16px 20px;
+  font-size:     13px;
+  color:         var(--green);
+  line-height:   1.6;
+  margin-top:    16px;
+  font-weight:   700;
+}
+
+/* 失敗したときは赤に変わるよ（script.js が .error クラスをつける） */
+.submission-note.error {
+  background:   #fce8e6;
+  border-color: rgba(192, 57, 43, 0.2);
+  color:        #c0392b;
+}
+
+/* 次回 Meetup の案内カード（黒背景） */
+.meetup-card {
+  background:    linear-gradient(135deg, var(--ink) 0%, #2d2a20 100%);
+  color:         var(--cream);
+  border-radius: 20px;
+  padding:       28px;
+  margin-top:    24px;
+  text-align:    left;
+}
+
+.meetup-card .mc-label {
+  font-size:      10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--warm);
+  font-weight:    700;
+  margin-bottom:  10px;
+}
+
+.meetup-card .mc-title {
+  font-family:   'DM Serif Display', serif;
+  font-size:     22px;
+  margin-bottom: 8px;
+  line-height:   1.3;
+}
+
+.meetup-card .mc-date {
+  font-size:     13px;
+  color:         rgba(245, 240, 232, 0.6);
+  margin-bottom: 16px;
+}
+
+/* 参加登録リンクボタン */
+.meetup-link {
+  display:        inline-block;
+  padding:        10px 20px;
+  background:     var(--warm);
+  color:          #fff;
+  border-radius:  99px;
+  font-size:      13px;
+  font-weight:    700;
+  text-decoration: none;
+  transition:     opacity 0.15s;
+}
+
+.meetup-link:hover { opacity: 0.85; }
