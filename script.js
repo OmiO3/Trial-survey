@@ -21,9 +21,10 @@
   Google スプレッドシートに連携するときは
   コメントを外して GAS の URL に切りかえてね。
 */
-const SERVER_URL = 'http://localhost:3000/submit';
-// ↓ スプレッドシートと連携するときはこっちを使う
-// const SERVER_URL = 'https://script.google.com/macros/s/ここにIDを入れる/exec';
+// スプレッドシート（Google Apps Script）に送るURL
+const SERVER_URL = 'https://script.google.com/macros/s/AKfycbzbz6zu3yY0io_V4xzhBsOpjF4LF959t6FvFzPJ0kNk60SOBjm0tzrFSaKOoJiYZ_AERA/exec';
+// ↓ ローカル環境で動かすときはこっちを使う
+// const SERVER_URL = 'http://localhost:3000/submit';
 
 
 /* ========================================
