@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPL ふりかえりアンケート</title>
+
+  <!--
+    ========================================
+    フォントの読み込み（Googleフォント）
+    ========================================
+    インターネットからきれいな文字を
+    かりてきているよ。
+      DM Serif Display → タイトル用のおしゃれな文字
+      Noto Sans JP     → 日本語の読みやすい文字
+  -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Noto+Sans+JP:wght@300;400;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!--
+    ========================================
+    スタイルシートの読み込み
+    ========================================
+    「見た目」の設定が書いてある style.css を
+    つなげているよ。
+  -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!--
+    ========================================
+    プログレスバー（しんちょくバー）
+    ========================================
+    画面の一番上にある細いバー。
+    アンケートが進むにつれてのびていくよ。
+    script.js の goTo() 関数がのばしてくれる。
+  -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!--
+    ========================================
+    ヘッダー（画面の上のほう）
+    ========================================
+    ロゴとステップ数字（Step 1 / 3）を
+    表示しているよ。
+  -->
+  <header>
+    <div class="logo-text">MPL × Reflection</div>
+    <div class="step-counter" id="step-counter">Step 1 / 3</div>
+  </header>
+
+  <!--
+    ========================================
+    メインコンテンツ
+    ========================================
+    アンケートの中身がここに入っているよ。
+    「スクリーン」というかたまりが 5 つあって、
+    1 つずつ表示を切りかえる仕組みになっているよ。
+  -->
+  <main>
+
+    <!-- ============================================
+         スクリーン 0：最初のあいさつ画面
+         ============================================
+         アンケートがはじまる前のトップ画面。
+         「はじめる」ボタンを押すとスクリーン 1 へ移動。
+    -->
+    <div class="screen active" id="screen-0">
+      <div class="screen-eyebrow">Workshop Survey</div>
+      <div class="screen-title">
+        今日の体験を、<br><em>振り返ろう。</em>
+      </div>
+      <div class="screen-desc">
+        所要時間は約3分です。<br>
+        あなたの声が、MPLをより良くします。<br>
+        そして、あなたのプロジェクトが次の一歩を踏み出す力になります。
+      </div>
+      <!-- onclick="goTo(1)" → ボタンを押したらスクリーン 1 へ -->
+      <button class="next-btn" onclick="goTo(1)">はじめる →</button>
+    </div>
+
+    <!-- ============================================
+         スクリーン 1：今日の体験をふりかえる
+         ============================================
+         Q1〜Q4 の質問が入っているよ。
+         Q1・Q2・Q3 に答えないと
+         「次へ」ボタンが押せない仕組みになっているよ。
+    -->
+    <div class="screen" id="screen-1">
+      <div class="screen-eyebrow">Step 1 of 3 — 今日の体験</div>
+      <div class="screen-title">今日の<br><em>ハイライト</em>は？</div>
+      <div class="screen-desc">
+        ワークショップを振り返って、素直に答えてみてください。
+      </div>
+
+      <!-- Q1：一番心が動いた瞬間 -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">1</span>今日、一番心が動いた瞬間は？
+        </div>
+        <!--
+          カードを 4 枚ならべているよ。
+          クリックすると selectMoment() 関数が動くよ。
+          第 2 引数（'火星コンビニ' など）が選ばれた答えになるよ。
+        -->
+        <div class="moment-grid">
+          <div class="moment-card" onclick="selectMoment(this, '火星コンビニ')">
+            <div class="moment-icon">🪐</div>
+            <div class="moment-label">火星コンビニのワーク</div>
+            <div class="moment-sub">アイスブレイクで発想が広がった</div>
+          </div>
+          <div class="moment-card" onclick="selectMoment(this, '5年後ビジョン')">
+            <div class="moment-icon">🔭</div>
+            <div class="moment-label">5年後を描いたとき</div>
+            <div class="moment-sub">ワクワクが膨らんだ</div>
+          </div>
+          <div class="moment-card" onclick="selectMoment(this, '対話・共感')">
+            <div class="moment-icon">💬</div>
+            <div class="moment-label">誰かと話したとき</div>
+            <div class="moment-sub">対話で気づきがあった</div>
+          </div>
+          <div class="moment-card" onclick="selectMoment(this, '53秒宣言')">
+            <div class="moment-icon">🎤</div>
+            <div class="moment-label">53秒で宣言したとき</div>
+            <div class="moment-sub">言葉にしたら現実に近づいた</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2：満足度（絵文字ボタン） -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">2</span>今日の満足度は？
+        </div>
+        <!--
+          5 つの絵文字ボタン。
+          クリックすると selectSat(this, 数字) が動くよ。
+          数字が大きいほど満足している意味だよ。
+        -->
+        <div class="satisfaction-row">
+          <button class="sat-btn" onclick="selectSat(this, 1)">😞</button>
+          <button class="sat-btn" onclick="selectSat(this, 2)">😕</button>
+          <button class="sat-btn" onclick="selectSat(this, 3)">😐</button>
+          <button class="sat-btn" onclick="selectSat(this, 4)">😊</button>
+          <button class="sat-btn" onclick="selectSat(this, 5)">🤩</button>
+        </div>
+        <div class="sat-labels">
+          <span>もの足りない</span>
+          <span>最高だった！</span>
+        </div>
+      </div>
+
+      <!-- Q3：ワークの難しさ -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">3</span>ワークの難しさは？
+        </div>
+        <div class="diff-row">
+          <button class="diff-btn" onclick="selectDiff(this, 'やさしすぎた')">
+            やさし<br>すぎた
+          </button>
+          <button class="diff-btn" onclick="selectDiff(this, 'ちょうどよかった')">
+            ちょうど<br>よかった
+          </button>
+          <button class="diff-btn" onclick="selectDiff(this, '少し難しかった')">
+            少し<br>難しかった
+          </button>
+          <button class="diff-btn" onclick="selectDiff(this, '難しすぎた')">
+            難し<br>すぎた
+          </button>
+        </div>
+      </div>
+
+      <!-- Q4：自由記述（任意） -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">4</span>改善してほしい点があれば（任意）
+        </div>
+        <!--
+          id="q-improve" → script.js がこの欄の内容を読むときに使うよ。
+        -->
+        <textarea
+          class="textarea-input"
+          id="q-improve"
+          rows="3"
+          placeholder="時間配分、進め方、内容など何でも。運営チームが真剣に読みます。"
+        ></textarea>
+      </div>
+
+      <!--
+        「次へ」ボタン
+        disabled → 最初はグレーで押せない状態にしているよ。
+        Q1・Q2・Q3 に答えると checkBtn1() が有効にしてくれるよ。
+      -->
+      <button class="next-btn" id="btn-1" onclick="goTo(2)" disabled>
+        次へ →
+      </button>
+    </div>
+
+    <!-- ============================================
+         スクリーン 2：プロジェクトをふりかえる
+         ============================================
+         Q5〜Q7。自分のプロジェクトを
+         もう一度言葉にしてもらう画面だよ。
+         Q5・Q6・Q7 の 3 つに答えないと次へ進めないよ。
+    -->
+    <div class="screen" id="screen-2">
+      <div class="screen-eyebrow">Step 2 of 3 — あなたのプロジェクト</div>
+      <div class="screen-title">あなたの<br><em>種</em>を確認しよう。</div>
+      <div class="screen-desc">
+        今日生まれたプロジェクトを、もう一度言葉にしてみてください。
+      </div>
+
+      <!-- Q5：プロジェクト名 -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">5</span>プロジェクト名
+        </div>
+        <!--
+          oninput="checkBtn2()" → 文字を打つたびにボタンを確認するよ。
+        -->
+        <input
+          type="text"
+          class="text-input"
+          id="q-project"
+          placeholder="例）日本ネバネバ協会"
+          oninput="checkBtn2()"
+        >
+      </div>
+
+      <!-- Q6：今週やること -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">6</span>今週やること（最初の一歩）
+        </div>
+        <div class="q-sub">
+          53秒宣言で言ったことを、もう一度書いてみましょう。
+        </div>
+        <input
+          type="text"
+          class="text-input"
+          id="q-step"
+          placeholder="例）SNSアカウントを作る"
+          oninput="checkBtn2()"
+        >
+      </div>
+
+      <!-- Q7：今の気持ち（ラジオボタン風カード） -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">7</span>ワーク後の気持ちに近いものは？
+        </div>
+        <!--
+          selectRadio(this, 'feeling', '答え') という形で
+          どの気持ちが選ばれたかを S.feeling に記録するよ。
+        -->
+        <div class="radio-cards">
+          <div class="radio-card"
+               onclick="selectRadio(this, 'feeling', 'やる気満々！早速動きたい')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">🔥 やる気満々！早速動きたい</div></div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'feeling', 'ワクワクしてる。少し不安もある')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">✨ ワクワクしてる。少し不安もある</div></div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'feeling', 'まだぼんやりしている。もう少し考えたい')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">🌫️ まだぼんやり。もう少し考えたい</div></div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'feeling', '誰かと一緒にやりたい気持ちが強い')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">🤝 誰かと一緒にやりたい気持ちが強い</div></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="next-btn" id="btn-2" onclick="goTo(3)" disabled>
+        次へ →
+      </button>
+    </div>
+
+    <!-- ============================================
+         スクリーン 3：次のステップ・属性
+         ============================================
+         Q8〜Q10。Meetup 意向と属性を聞くよ。
+         ここで「送信」ボタンを押すとデータが保存されるよ。
+    -->
+    <div class="screen" id="screen-3">
+      <div class="screen-eyebrow">Step 3 of 3 — 次のステップ</div>
+      <div class="screen-title">次の<br><em>Meetup</em>へ。</div>
+      <div class="screen-desc">
+        最後にいくつか教えてください。集客・コンテンツ改善に役立てます。
+      </div>
+
+      <!-- Q8：Meetup 参加意向 -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">8</span>次回Meetupへの参加意向は？
+        </div>
+        <div class="radio-cards">
+          <div class="radio-card"
+               onclick="selectRadio(this, 'meetup', '絶対参加したい！')">
+            <div class="radio-dot"></div>
+            <div>
+              <div class="radio-label">🎯 絶対参加したい！</div>
+              <div class="radio-sub">ピッチも挑戦してみたい</div>
+            </div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'meetup', '参加したい（予定次第）')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">📅 参加したい（予定次第）</div></div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'meetup', 'まずは見学したい')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">👀 まずは見学したい</div></div>
+          </div>
+          <div class="radio-card"
+               onclick="selectRadio(this, 'meetup', '友人・知人を誘いたい')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">💌 友人・知人を誘いたい</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q9：参加動機（複数選択 OK） -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">9</span>今日参加した一番の理由は？
+        </div>
+        <!--
+          id="motives" → script.js がここにボタンを自動で作るよ。
+          MOTIVES という配列の中身を読んでボタンを作るんだ。
+        -->
+        <div class="pill-group" id="motives"></div>
+      </div>
+
+      <!-- Q10：属性（任意） -->
+      <div class="q-block">
+        <div class="q-label">
+          <span class="q-num">10</span>プロフィール（任意）
+        </div>
+        <div class="q-sub">次回の集客・コンテンツ設計に活用します。</div>
+        <div class="attr-row">
+          <div class="attr-field">
+            <label>年代</label>
+            <select id="q-age">
+              <option value="">選択</option>
+              <option>10代</option><option>20代</option><option>30代</option>
+              <option>40代</option><option>50代以上</option>
+            </select>
+          </div>
+          <div class="attr-field">
+            <label>職業・立場</label>
+            <select id="q-job">
+              <option value="">選択</option>
+              <option>会社員</option><option>フリーランス</option>
+              <option>起業家・経営者</option><option>学生</option>
+              <option>主婦・主夫</option><option>その他</option>
+            </select>
+          </div>
+          <div class="attr-field">
+            <label>MPLを知ったきっかけ</label>
+            <select id="q-channel">
+              <option value="">選択</option>
+              <option>知人の紹介</option><option>SNS（X/Instagram）</option>
+              <option>connpass / イベントサイト</option>
+              <option>Slack / コミュニティ</option><option>その他</option>
+            </select>
+          </div>
+          <div class="attr-field">
+            <label>MPL参加回数</label>
+            <select id="q-times">
+              <option value="">選択</option>
+              <option>初めて</option><option>2〜3回目</option>
+              <option>4回以上のリピーター</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 送信ボタン → submitSurvey() を呼び出すよ -->
+      <button class="next-btn" onclick="submitSurvey()">
+        送信して、メッセージを受け取る ✦
+      </button>
+    </div>
+
+    <!-- ============================================
+         スクリーン 4：結果・AI メッセージ
+         ============================================
+         送信後に表示される画面。
+         Claude（AI）が書いてくれたオリジナルの
+         メッセージが表示されるよ。
+    -->
+    <div class="screen" id="screen-4">
+      <div class="result-wrap">
+        <div class="result-icon">🌱</div>
+        <div class="screen-eyebrow" style="text-align: center;">
+          あなたへのメッセージ
+        </div>
+        <div class="screen-title" style="text-align: center;">
+          <em>ありがとう、</em><br>そして行ってらっしゃい。
+        </div>
+
+        <!--
+          id="ai-message-card" → AI のメッセージをここに入れるよ。
+          最初はローディング（読み込み中）のアニメーションが
+          表示されていて、メッセージができたら入れ替わるよ。
+        -->
+        <div class="ai-message-card" id="ai-message-card">
+          <div class="ai-loading">
+            <div class="dot-anim">
+              <span></span><span></span><span></span>
+            </div>
+            <span>メッセージを準備しています…</span>
+          </div>
+        </div>
+
+        <!-- コピーとシェアのボタン -->
+        <div class="result-actions">
+          <button class="result-btn" onclick="copyMessage()">📋 コピー</button>
+          <button class="result-btn share" onclick="shareMessage()">🔗 シェア</button>
+        </div>
+
+        <!--
+          id="submission-note" → 送信結果のお知らせを表示するよ。
+          成功すると緑、失敗すると赤になるよ（style.css で色を決めているよ）。
+        -->
+        <div class="submission-note" id="submission-note">
+          ✅ 回答が記録されました。ご協力ありがとうございました！
+        </div>
+
+        <!-- 次回 Meetup の案内カード -->
+        <div class="meetup-card">
+          <div class="mc-label">Next Event</div>
+          <div class="mc-title">MPL Meetup</div>
+          <div class="mc-date">5月20日（水）19:30〜 / 麻布十番</div>
+          <a href="#" class="meetup-link">参加登録する →</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!--
+    ========================================
+    JavaScript ファイルの読み込み
+    ========================================
+    「動き」の設定が書いてある script.js を
+    つなげているよ。
+    </body> の直前に書くのがポイント！
+    （HTML が全部読み込まれてから動かすため）
+  -->
+  <script src="script.js"></script>
+
+</body>
+</html>
