@@ -344,7 +344,89 @@ main {
   margin-top:      8px;
   padding:         0 4px;
   font-size:       11px;
-< truncated lines 347-425 >
+  color:           var(--muted);
+}
+
+/* ========================================
+   Q3：難しさボタン（4択）
+   ========================================
+*/
+.diff-row {
+  display: flex;
+  gap:     8px;
+}
+
+.diff-btn {
+  flex:          1;
+  padding:       12px 8px;
+  border:        2px solid var(--soft);
+  border-radius: 12px;
+  background:    #fff;
+  font-size:     13px;
+  font-weight:   700;
+  cursor:        pointer;
+  transition:    all 0.15s;
+  text-align:    center;
+  font-family:   'Noto Sans JP', sans-serif;
+}
+
+.diff-btn:hover          { border-color: var(--warm); }
+.diff-btn.selected       { border-color: var(--warm); background: #fffbf3; }
+
+
+/* ========================================
+   テキスト入力欄（1行・複数行）
+   ========================================
+*/
+.text-input,
+.textarea-input {
+  width:        100%;
+  background:   #fff;
+  border:       2px solid var(--soft);
+  border-radius: 14px;
+  padding:      20px 20px;  /* 上下を広げて入力欄を大きく */
+  font-family:  'Noto Sans JP', sans-serif;
+  font-size:    16px;       /* 文字も少し大きく */
+  font-weight:  300;
+  color:        var(--ink);
+  outline:      none;
+  transition:   border-color 0.2s;
+  resize:       none;
+}
+
+/* Q5・Q6の1行入力欄をさらに高く */
+.text-input {
+  min-height: 68px;
+}
+
+/* フォーカス（クリックして選択）したとき */
+.text-input:focus,
+.textarea-input:focus {
+  border-color: var(--warm);
+  /* ゴールドのぼんやりした光を追加 */
+  box-shadow:   0 0 0 4px rgba(200, 169, 110, 0.1);
+}
+
+/* 何も入力していないときのうすい文字 */
+.text-input::placeholder,
+.textarea-input::placeholder { color: #bfb9ad; }
+
+
+/* ========================================
+   ラジオカード（Q7・Q8で使うカード型選択肢）
+   ========================================
+*/
+.radio-cards {
+  display: grid;
+  gap:     10px;
+}
+
+/* カード1枚 */
+.radio-card {
+  background:    #fff;
+  border:        2px solid var(--soft);
+  border-radius: 14px;
+  padding:       16px 20px;
   cursor:        pointer;
   transition:    all 0.15s;
   display:       flex;
