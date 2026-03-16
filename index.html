@@ -129,6 +129,21 @@
             <div class="moment-label">53秒で宣言したとき</div>
             <div class="moment-sub">言葉にしたら現実に近づいた</div>
           </div>
+          <div class="moment-card" onclick="selectMoment(this, 'プロジェクト名を決めた')">
+            <div class="moment-icon">✏️</div>
+            <div class="moment-label">プロジェクト名を決めた時</div>
+            <div class="moment-sub">名前がついた瞬間、本物になった</div>
+          </div>
+          <div class="moment-card" onclick="selectMoment(this, 'ロゴを作成した')">
+            <div class="moment-icon">🎨</div>
+            <div class="moment-label">ロゴを作成した時</div>
+            <div class="moment-sub">ビジュアルで一気にリアルになった</div>
+          </div>
+          <div class="moment-card" onclick="selectMoment(this, 'Tシャツを作った')">
+            <div class="moment-icon">👕</div>
+            <div class="moment-label">Tシャツを作った時</div>
+            <div class="moment-sub">形になったことで本気度が上がった</div>
+          </div>
         </div>
       </div>
 
@@ -160,19 +175,15 @@
         <div class="q-label">
           <span class="q-num">3</span>ワークの難しさは？
         </div>
-        <div class="diff-row">
-          <button class="diff-btn" onclick="selectDiff(this, 'やさしすぎた')">
-            やさし<br>すぎた
-          </button>
-          <button class="diff-btn" onclick="selectDiff(this, 'ちょうどよかった')">
-            ちょうど<br>よかった
-          </button>
-          <button class="diff-btn" onclick="selectDiff(this, '少し難しかった')">
-            少し<br>難しかった
-          </button>
-          <button class="diff-btn" onclick="selectDiff(this, '難しすぎた')">
-            難し<br>すぎた
-          </button>
+        <div class="satisfaction-row">
+          <button class="sat-btn" onclick="selectDiff(this, 'やさしすぎた')">😴</button>
+          <button class="sat-btn" onclick="selectDiff(this, 'ちょうどよかった')">😊</button>
+          <button class="sat-btn" onclick="selectDiff(this, '少し難しかった')">🤔</button>
+          <button class="sat-btn" onclick="selectDiff(this, '難しすぎた')">😵</button>
+        </div>
+        <div class="sat-labels">
+          <span>やさしすぎた</span>
+          <span style="margin-left: auto;">難しすぎた</span>
         </div>
       </div>
 
@@ -187,7 +198,7 @@
         <textarea
           class="textarea-input"
           id="q-improve"
-          rows="3"
+          rows="6"
           placeholder="時間配分、進め方、内容など何でも。運営チームが真剣に読みます。"
         ></textarea>
       </div>
